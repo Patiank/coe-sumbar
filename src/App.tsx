@@ -278,10 +278,10 @@ function MainApp({ user, onLogout }: { user: any, onLogout: () => void }) {
   useEffect(() => {
     loadDataFromServer();
     
-    // Auto-refresh every 60 seconds for real-time visibility
+    // Auto-refresh every 10 seconds for real-time visibility
     const interval = setInterval(() => {
       loadDataFromServer(false);
-    }, 60000);
+    }, 10000);
     
     return () => clearInterval(interval);
   }, []);
