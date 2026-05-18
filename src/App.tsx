@@ -76,6 +76,21 @@ const SESSION_KEY = "coe_sumbar_session";
 const SHEET_URL = import.meta.env.VITE_SHEET_URL || "";
 
 // --- HELPERS ---
+function formatDate(dateStr: string | undefined) {
+  if (!dateStr) return "-";
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr; // Return as is if invalid
+    return d.toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  } catch {
+    return dateStr;
+  }
+}
+
 async function sheetSaveEvent(event: Event) {
   try {
     // Note: Google Apps Script usually requires redirection and correct CORS Handling.
@@ -693,7 +708,7 @@ function MainApp({ user, onLogout }: { user: any, onLogout: () => void }) {
                   <dl className="grid grid-cols-[140px_1fr] gap-x-4 gap-y-3.5 text-xs">
                     <dt className="text-[#4A4030]">Wilayah</dt><dd>{selEvent.kabupatenKota}</dd>
                     <dt className="text-[#4A4030]">Kategori</dt><dd>{selEvent.kategori}</dd>
-                    <dt className="text-[#4A4030]">Tanggal</dt><dd>{selEvent.tanggalMulai} {selEvent.tanggalSelesai ? `s/d ${selEvent.tanggalSelesai}` : ''}</dd>
+                    <dt className="text-[#4A4030]">Tanggal</dt><dd>{formatDate(selEvent.tanggalMulai)} {selEvent.tanggalSelesai ? `s/d ${formatDate(selEvent.tanggalSelesai)}` : ''}</dd>
                     <dt className="text-[#4A4030]">Lokasi</dt><dd>{selEvent.lokasi || '-'}</dd>
                     <dt className="text-[#4A4030]">Deskripsi</dt><dd className="leading-relaxed opacity-80">{selEvent.deskripsi || '-'}</dd>
                     <dt className="text-[#4A4030]">Sasaran</dt><dd>{selEvent.targetWisatawan ? Number(selEvent.targetWisatawan).toLocaleString('id-ID') + ' orang' : '-'}</dd>
