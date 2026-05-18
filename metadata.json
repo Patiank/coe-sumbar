@@ -1,0 +1,6 @@
+{
+  "name": "CoE Sumatera Barat",
+  "description": "Sistem monitoring Calendar of Events Dinas Pariwisata Sumatera Barat berbasis real-time dengan integrasi Google Sheets.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
