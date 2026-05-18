@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, type ChangeEvent } from 'react';
 import * as XLSX from 'xlsx';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -370,7 +370,7 @@ function MainApp({ user, onLogout }: { user: any, onLogout: () => void }) {
     showToast("Event telah diajukan ke Provinsi! ✓");
   };
 
-  const handleImportFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImportFile = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; if (!file) return;
     const reader = new FileReader();
     reader.onload = (ev) => {
@@ -632,6 +632,48 @@ function MainApp({ user, onLogout }: { user: any, onLogout: () => void }) {
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+
+          {view === "calendar" && (
+            <div className="animate-in fade-in duration-500">
+              <div className="flex items-center gap-4 mb-6">
+                <button onClick={() => { if (calMonth === 0) { setCalMonth(11); setCalYear(y => y - 1); } else setCalMonth(m => m - 1); }}
+                  className="btn-secondary !py-1 !px-3 hover:bg-[#C4A03C15]">‹</button>
+                <div className="text-lg font-bold text-[#E8DCC8] min-w-[200px] text-center">
+                  {BULAN[calMonth]} {calYear}
+                </div>
+                <button onClick={() => { if (calMonth === 11) { setCalMonth(0); setCalYear(y => y + 1); } else setCalMonth(m => m + 1); }}
+                  className="btn-secondary !py-1 !px-3 hover:bg-[#C4A03C15]">›</button>
+              </div>
+              <div className="grid grid-cols-7 gap-1 mb-1">
+                {["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"].map(d => (
+                  <div key={d} className="text-center text-[11px] text-[#4A4030] py-1 font-bold">{d}</div>
+                ))}
+              </div>
+              <div className="grid grid-cols-7 gap-1">
+                {Array(getFD(calYear, calMonth)).fill(null).map((_, i) => <div key={`empty-${i}`} className="min-h-[100px]" />)}
+                {Array(getDIM(calYear, calMonth)).fill(null).map((_, i) => {
+                  const day = i + 1;
+                  const dayEvs = eInDay(day);
+                  const isToday = new Date().getFullYear() === calYear && new Date().getMonth() === calMonth && new Date().getDate() === day;
+                  return (
+                    <div key={day} className={cn("min-h-[100px] rounded-lg p-2 transition-colors border", 
+                      isToday ? "bg-[#C4A03C10] border-[#C4A03C40]" : "bg-white/5 border-white/5")}>
+                      <div className={cn("text-sm mb-1 font-bold", isToday ? "text-[#C4A03C]" : "text-[#4A4030]")}>{day}</div>
+                      <div className="flex flex-col gap-1">
+                        {dayEvs.map(e => (
+                          <div key={e.id} onClick={(ev) => { ev.stopPropagation(); setSelEvent(e); setView("detail"); }}
+                            className="text-[8px] bg-[#C4A03C15] text-[#C4A03C] p-1 rounded border border-[#C4A03C20] truncate cursor-pointer hover:bg-[#C4A03C25] transition-colors"
+                            title={e.namaEvent}>
+                            {e.namaEvent}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
 
